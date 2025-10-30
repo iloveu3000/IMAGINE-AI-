@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #616363;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+        
+        .box {
+            width: calc(100% - 15cm);
+            height: calc(100% - 6cm);
+            background-color: #070607;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.9);
+            transition: opacity 0.5s ease;
+        }
+        
+        .box img {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 65%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: opacity 0.5s ease;
+        }
+        
+        .login-content, .signup-content, .forgot-content, .otp-content {
+            position: absolute;
+            width: 35%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .signup-content, .forgot-content, .otp-content {
+            display: none;
+        }
+        
+        .login-title, .signup-title, .forgot-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #555;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .error-message {
+            color: #ff5555;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+            height: 1rem;
+        }
+        
+        .forgot-password, .login-link {
+            color: #aaa;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .signin-button, .signup-submit, .forgot-submit, .otp-submit {
+            background-color: transparent;
+            color: white;
+            border: none;
+            padding: 0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .tagline {
+            position: absolute;
+            bottom: 5%;
+            left: 2rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            width: calc(35% - 4rem);
+            line-height: 1.5;
+        }
+        
+        .repair-text {
+            position: absolute;
+            top: 2%;
+            right: 0.5%;
+            font-size: 1.6rem;
+            color: #aaa;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+        
+        .page-indicator {
+            position: absolute;
+            bottom: 3%;
+            right: 3%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-number {
+            margin: 0 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .page-arrow {
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .loading-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background-color: white;
+            z-index: 100;
+            transition: width 0.3s;
+        }
+        
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+        
+        .otp-input {
+            width: 3rem;
+            height: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+            background-color: transparent;
+            border: 1px solid #555;
+            color: white;
+            margin: 0 0.5rem;
+        }
+        
+        .resend-otp {
+            color: #aaa;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: underline;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        #welcomePage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #616363;
+        }
+
+        .dashboard-container {
+            width: calc(100% - 1cm);
+            height: calc(100% - 1cm);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.9);
+            display: flex;
+        }
+
+        .dashboard-bg-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.9;
+        }
+
+        .dashboard-glass {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(7, 6, 7, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 80px;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 30px;
+        }
+        
+        .divider-line {
+            width: 1px;
+            height: 90%;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+        }
+
+        .nav-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-icon.active {
+            color: white;
+        }
+
+        .mail-icon-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            perspective: 1000px;
+        }
+
+        .mail-base {
+            position: absolute;
+            width: 24px;
+            height: 16px;
+            background-color: currentColor;
+            bottom: 0;
+            border-radius: 2px;
+        }
+
+        .mail-lid {
+            position: absolute;
+            width: 24px;
+            height: 12px;
+            background-color: currentColor;
+            top: 0;
+            transform-origin: bottom center;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .mail-lid::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: currentColor;
+            transform-origin: bottom center;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .mail-card {
+            position: absolute;
+            width: 18px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            bottom: -12px;
+            left: 3px;
+            border-radius: 1px;
+            transform: translateY(0);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: -1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-icon.active .mail-lid {
+            transform: rotateX(180deg);
+        }
+
+        .nav-icon.active .mail-card {
+            transform: translateY(-14px);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            position: relative;
+        }
+
+        .search-bar {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 6px 12px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: perspective(500px) translateZ(10px);
+        }
+
+        .search-bar:focus-within {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.4),
+                0 8px 16px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: perspective(500px) translateZ(15px);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            margin-left: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-bar i {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+        }
+
+        .search-bar:focus-within i {
+            color: white;
+        }
+
+        .add-pla-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            color: black;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 15px 8px 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 6px 12px rgba(0, 0, 0, 0.2),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            transform: perspective(500px) translateZ(15px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .add-pla-btn:hover {
+            transform: perspective(500px) translateZ(20px);
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.4),
+                0 8px 16px rgba(0, 0, 0, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .add-pla-btn:active {
+            transform: perspective(500px) translateZ(10px);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-pla-btn i {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            transition: all 0.3s;
+        }
+
+        .add-pla-btn:hover i {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        /* NEW FILE CARD DESIGN - Custom Design with Flip Effect */
+        .files-section {
+            position: absolute;
+            top: 100px;
+            left: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .file-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            z-index: 1;
+            height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Custom scrollbar for file cards container */
+        .file-cards-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .file-cards-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .file-cards-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .file-cards-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* File Card - Custom Design with Flip Effect */
+        .file-card {
+            position: relative;
+            width: 100px; /* Square shape */
+            height: 100px; /* Square shape */
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Base border color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s ease, top 0.3s ease;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+            cursor: pointer;
+            margin-bottom: -80px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .file-card:first-child {
+            margin-bottom: -80px;
+        }
+
+        .file-card.flipped {
+            transform: rotateY(-25deg) skewX(-5deg);
+            box-shadow: -15px 15px 40px -10px rgba(0, 0, 0, 0.6);
+            transform-origin: right center;
+            margin-bottom: -60px;
+            margin-left: 20px;
+        }
+
+        /* Hover state for the file card */
+        .file-card:hover {
+            height: 120px; /* Increase height to original 120px on hover */
+            z-index: 10;
+        }
+
+        .file-card.flipped:hover {
+            margin-bottom: -40px;
+            margin-left: 25px;
+            height: 120px;
+            z-index: 10;
+        }
+
+        /* Border Effects */
+        .file-border-top,
+        .file-border-bottom {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transition: opacity 0.3s, box-shadow 0.3s;
+        }
+
+        .file-border-top {
+            top: 0;
+            opacity: 1; /* Always glowing */
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Default subtle glow */
+        }
+
+        .file-border-bottom {
+            top: auto;
+            bottom: 0;
+            opacity: 0; /* Initially hidden */
+            box-shadow: none; /* No default shadow */
+        }
+
+        /* Modified L-Brackets with Katana-like slant */
+        .file-corner {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            z-index: 1;
+        }
+
+        .file-corner-tl {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+            border-color: white;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+
+        .file-corner-tr {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+            border-color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+        }
+
+        .file-corner-bl {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            clip-path: polygon(0 0, 0 100%, 100% 100%);
+        }
+
+        .file-corner-br {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            clip-path: polygon(100% 0, 0 100%, 100% 100%);
+        }
+
+        /* Hover Glow Effects */
+        .file-card:hover .file-corner { /* Apply to all corners on hover */
+            height: 23px; /* Increase height to original 23px on hover */
+            border-color: white; /* Intensify all L-brackets on hover */
+        }
+
+        .file-card:hover .file-corner-tl,
+        .file-card:hover .file-corner-tr {
+            box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.9);
+        }
+
+        .file-card:hover .file-corner-bl,
+        .file-card:hover .file-corner-br {
+            border-color: white;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .file-card:hover .file-border-top,
+        .file-card:hover .file-border-bottom {
+            opacity: 1; /* Make bottom line visible */
+        }
+
+        /* Plus Sign */
+        .file-plus {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .file-plus::before,
+        .file-plus::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .file-plus::before {
+            width: 2px;
+            height: 20px;
+            top: 10px;
+            left: 19px;
+        }
+
+        .file-plus::after {
+            width: 20px;
+            height: 2px;
+            top: 19px;
+            left: 10px;
+        }
+
+        .file-card:hover .file-plus::before,
+        .file-card:hover .file-plus::after {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .file-name {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Orientation button */
+        .orientation-btn {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .orientation-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .orientation-btn i {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background-color: rgba(7, 6, 7, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .context-menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* File Enlargement View - Transformed from File Card */
+        .file-enlarged-view {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transform-style: preserve-3d;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .file-enlarged-view.active {
+            display: flex;
+            width: 800px;
+            height: 600px;
+            background-color: rgba(7, 6, 7, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+            border-radius: 12px;
+        }
+
+        .file-enlarged-view.transforming {
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .file-enlarged-view.reverse-transforming {
+            background-color: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .file-enlarged-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: transparent;
+            width: 100%;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.4s ease 0.4s;
+        }
+
+        .file-enlarged-view.active .file-enlarged-header {
+            opacity: 1;
+        }
+
+        .file-enlarged-view.reverse-transforming .file-enlarged-header {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .file-enlarged-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .file-enlarged-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .file-enlarged-close:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-enlarged-content {
+            flex-grow: 1;
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.4s ease 0.6s;
+        }
+
+        .file-enlarged-view.active .file-enlarged-content {
+            opacity: 1;
+        }
+
+        .file-enlarged-view.reverse-transforming .file-enlarged-content {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .file-preview-section {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-preview-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .file-preview {
+            flex-grow: 1;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            overflow-y: auto;
+        }
+
+        /* AI Chat Section */
+        .ai-chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: transparent;
+        }
+
+        .ai-chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: transparent;
+        }
+
+        .ai-chat-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-chat-title i {
+            color: #4CAF50;
+        }
+
+        .ai-chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .ai-chat-message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .ai-chat-message.user {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            align-self: flex-end;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-chat-message.bot {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.1));
+            align-self: flex-start;
+            color: white;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .ai-chat-message.typing {
+            background: rgba(255, 255, 255, 0.05);
+            align-self: flex-start;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+
+        .ai-chat-input-container {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: transparent;
+            display: flex;
+            gap: 12px;
+        }
+
+        .ai-chat-input {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .ai-chat-input:focus {
+            border-color: rgba(76, 175, 80, 0.5);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .ai-chat-send {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-chat-send:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+            transform: translateY(-1px);
+        }
+
+        .ai-chat-send:active {
+            transform: translateY(0);
+        }
+
+        .ai-chat-send:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quick Questions */
+        .quick-questions {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: transparent;
+        }
+
+        .quick-questions-title {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .quick-questions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .quick-question-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+
+        .quick-question-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Rename Input */
+        .rename-input {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.8rem;
+            outline: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            width: 80px;
+            z-index: 2;
+        }
+
+        /* Search Results Section */
+        .search-results {
+            position: absolute;
+            top: 100px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            width: 200px;
+        }
+
+        .search-result-card {
+            width: 180px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .search-result-card:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .search-result-name {
+            font-size: 0.9rem;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .date-display {
+            position: absolute;
+            top: 80px;
+            right: 30px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* File Card L-Brackets for Enlarged View */
+        .file-enlarged-view .file-corner {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            z-index: 1;
+        }
+
+        .file-enlarged-view .file-corner-tl {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+            border-color: white;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+
+        .file-enlarged-view .file-corner-tr {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+            border-color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+        }
+
+        .file-enlarged-view .file-corner-bl {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            clip-path: polygon(0 0, 0 100%, 100% 100%);
+        }
+
+        .file-enlarged-view .file-corner-br {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            clip-path: polygon(100% 0, 0 100%, 100% 100%);
+        }
+
+        .file-enlarged-view.active .file-corner {
+            height: 23px;
+            border-color: white;
+        }
+
+        .file-enlarged-view.active .file-corner-tl,
+        .file-enlarged-view.active .file-corner-tr {
+            box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.9);
+        }
+
+        .file-enlarged-view.active .file-corner-bl,
+        .file-enlarged-view.active .file-corner-br {
+            border-color: white;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .file-enlarged-view.reverse-transforming .file-corner {
+            height: 16px;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body id="body">
+    <div class="box" id="loginBox">
+        <div class="loading-bar" id="loadingBar"></div>
+        
+        <div class="login-content" id="loginContent">
+            <div class="login-title">Sign In</div>
+            <div class="input-group">
+                <label class="input-label">User Name</label>
+                <div class="input-container">
+                    <input type="text" class="input-field" id="username" placeholder="Enter User Name" value="arun">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <div class="input-container">
+                    <input type="password" class="input-field" id="password" placeholder="Enter Password" value="arun">
+                </div>
+                <div class="error-message" id="loginError"></div>
+            </div>
+            <div class="forgot-password" id="forgotPassword">Forgot password?</div>
+            <button class="signin-button" id="signinButton">SIGN IN</button>
+            <div class="login-link" id="loginLink">Don't have an account? Sign up</div>
+        </div>
+        
+        <div class="signup-content" id="signupContent">
+            <div class="signup-title">Sign Up</div>
+            <div class="input-group">
+                <label class="input-label">User Name</label>
+                <div class="input-container">
+                    <input type="text" class="input-field" id="newUsername" placeholder="Enter User Name">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Email</label>
+                <div class="input-container">
+                    <input type="email" class="input-field" id="email" placeholder="Enter Email">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <div class="input-container">
+                    <input type="password" class="input-field" id="newPassword" placeholder="Enter Password">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Retype Password</label>
+                <div class="input-container">
+                    <input type="password" class="input-field" id="retypePassword" placeholder="Retype Password">
+                </div>
+                <div class="error-message" id="signupError"></div>
+            </div>
+            <button class="signup-submit" id="signupSubmit">SUBMIT</button>
+            <div class="login-link" id="backToLogin">Already have an account? Sign in</div>
+        </div>
+        
+        <div class="forgot-content" id="forgotContent">
+            <div class="forgot-title">Reset Password</div>
+            <div class="input-group">
+                <label class="input-label">Email</label>
+                <div class="input-container">
+                    <input type="email" class="input-field" id="forgotEmail" placeholder="Enter Email">
+                </div>
+                <div class="error-message" id="forgotError"></div>
+            </div>
+            <button class="forgot-submit" id="forgotSubmit">SEND OTP</button>
+            <div class="login-link" id="backToLoginFromForgot">Back to Sign In</div>
+        </div>
+        
+        <div class="otp-content" id="otpContent">
+            <div class="forgot-title">Enter OTP</div>
+            <div class="otp-container">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+            </div>
+            <div class="resend-otp" id="resendOtp">Resend OTP</div>
+            <button class="otp-submit" id="otpSubmit">VERIFY</button>
+            <div class="login-link" id="backToForgot">Back</div>
+        </div>
+        
+        <img src="black 2.png" alt="black" width="500" height="600" id="slideImage">
+        <div class="tagline" id="tagline">A simple way to sustain human life</div>
+        <div class="repair-text">REPAIR</div>
+        <div class="page-indicator">
+            <div class="page-arrow" id="prevArrow">〈</div>
+            <div class="page-number">1/2</div>
+            <div class="page-arrow" id="nextArrow">〉</div>
+        </div>
+    </div>
+
+    <div id="welcomePage" class="welcome-page">
+        <div class="dashboard-container">
+            <img class="dashboard-bg-image" src="black 2.png" alt="background">
+            <div class="dashboard-glass">
+                <div class="sidebar">
+                    <div class="logo-placeholder"></div>
+                    <div class="divider-line"></div>
+                    <div class="nav-icons">
+                        <i class="nav-icon fas fa-user" id="userIcon"></i>
+                        <i class="nav-icon fas fa-house active" id="homeIcon"></i>
+                        <div class="nav-icon mail-icon-container" id="mailIcon">
+                            <div class="mail-base"></div>
+                            <div class="mail-lid"></div>
+                            <div class="mail-card"></div>
+                        </div>
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <i class="nav-icon fas fa-sticky-note"></i>
+                    </div>
+                </div>
+                
+                <div class="main-content">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search files...">
+                    </div>
+                    
+                    <div class="date-display" id="dateDisplay"></div>
+                    
+                    <button class="add-pla-btn" id="addPlanBtn">
+                        <i class="fas fa-plus"></i>
+                        New Plan
+                    </button>
+
+                    <div class="files-section">
+                        <div class="file-cards-container" id="fileCardsContainer">
+                            <!-- File cards will be added here dynamically -->
+                        </div>
+                        
+                        <div class="orientation-btn" id="orientationBtn">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Results Section -->
+                    <div class="search-results" id="searchResults">
+                        <!-- Search results will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Enlargement View - Transformed from File Card -->
+    <div class="file-enlarged-view" id="fileEnlargedView">
+        <!-- L-Brackets -->
+        <div class="file-corner file-corner-tl"></div>
+        <div class="file-corner file-corner-tr"></div>
+        <div class="file-corner file-corner-bl"></div>
+        <div class="file-corner file-corner-br"></div>
+        
+        <div class="file-enlarged-header">
+            <div class="file-enlarged-title" id="fileEnlargedTitle">Plan</div>
+            <div class="file-enlarged-close" id="fileEnlargedClose">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="file-enlarged-content">
+            <div class="file-preview-section">
+                <div class="file-preview-title">Plan Content</div>
+                <div class="file-preview" id="filePreview">
+                    <!-- Plan content will be displayed here -->
+                </div>
+            </div>
+            <div class="ai-chat-section">
+                <div class="ai-chat-header">
+                    <div class="ai-chat-title">
+                        <i class="fas fa-robot"></i>
+                        Solid Mechanics AI Assistant
+                    </div>
+                </div>
+                <div class="ai-chat-messages" id="aiChatMessages">
+                    <div class="ai-chat-message bot">
+                        Hello! I'm your Solid Mechanics AI assistant. I can help you with this plan. Ask me anything about torsion, springs, pressure vessels, stress analysis, or material properties!
+                    </div>
+                </div>
+                <div class="quick-questions">
+                    <div class="quick-questions-title">Quick Questions:</div>
+                    <div class="quick-questions-grid">
+                        <button class="quick-question-btn" data-question="What is the torsion formula for solid shafts?">Torsion formula</button>
+                        <button class="quick-question-btn" data-question="How do I calculate spring deflection?">Spring deflection</button>
+                        <button class="quick-question-btn" data-question="Explain principal stresses">Principal stresses</button>
+                        <button class="quick-question-btn" data-question="What is circumferential stress in pressure vessels?">Pressure vessels</button>
+                    </div>
+                </div>
+                <div class="ai-chat-input-container">
+                    <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask about solid mechanics...">
+                    <button class="ai-chat-send" id="aiChatSend">
+                        <i class="fas fa-paper-plane"></i>
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="renameOption">Rename</div>
+        <div class="context-menu-item" id="deleteOption">Delete</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.getElementById('body');
+            const loadingBar = document.getElementById('loadingBar');
+            const loginBox = document.getElementById('loginBox');
+            const loginContent = document.getElementById('loginContent');
+            const signupContent = document.getElementById('signupContent');
+            const forgotContent = document.getElementById('forgotContent');
+            const otpContent = document.getElementById('otpContent');
+            const signinButton = document.getElementById('signinButton');
+            const signupSubmit = document.getElementById('signupSubmit');
+            const forgotSubmit = document.getElementById('forgotSubmit');
+            const otpSubmit = document.getElementById('otpSubmit');
+            const forgotPassword = document.getElementById('forgotPassword');
+            const loginLink = document.getElementById('loginLink');
+            const backToLogin = document.getElementById('backToLogin');
+            const backToLoginFromForgot = document.getElementById('backToLoginFromForgot');
+            const backToForgot = document.getElementById('backToForgot');
+            const resendOtp = document.getElementById('resendOtp');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const newUsernameInput = document.getElementById('newUsername');
+            const emailInput = document.getElementById('email');
+            const newPasswordInput = document.getElementById('newPassword');
+            const retypePasswordInput = document.getElementById('retypePassword');
+            const forgotEmailInput = document.getElementById('forgotEmail');
+            const loginError = document.getElementById('loginError');
+            const signupError = document.getElementById('signupError');
+            const forgotError = document.getElementById('forgotError');
+            const slideImage = document.getElementById('slideImage');
+            const tagline = document.getElementById('tagline');
+            const prevArrow = document.getElementById('prevArrow');
+            const nextArrow = document.getElementById('nextArrow');
+            const welcomePage = document.getElementById('welcomePage');
+            const addPlanBtn = document.getElementById('addPlanBtn');
+            const fileCardsContainer = document.getElementById('fileCardsContainer');
+            const mailIcon = document.getElementById('mailIcon');
+            const orientationBtn = document.getElementById('orientationBtn');
+            const homeIcon = document.getElementById('homeIcon');
+            const userIcon = document.getElementById('userIcon');
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            const dateDisplay = document.getElementById('dateDisplay');
+            
+            // New elements
+            const contextMenu = document.getElementById('contextMenu');
+            const renameOption = document.getElementById('renameOption');
+            const deleteOption = document.getElementById('deleteOption');
+            const fileEnlargedView = document.getElementById('fileEnlargedView');
+            const fileEnlargedTitle = document.getElementById('fileEnlargedTitle');
+            const fileEnlargedClose = document.getElementById('fileEnlargedClose');
+            const filePreview = document.getElementById('filePreview');
+            
+            // AI Chat elements
+            const aiChatMessages = document.getElementById('aiChatMessages');
+            const aiChatInput = document.getElementById('aiChatInput');
+            const aiChatSend = document.getElementById('aiChatSend');
+            const quickQuestionBtns = document.querySelectorAll('.quick-question-btn');
+
+            // Page state
+            let currentPage = 1;
+            let cardCounter = 0;
+            let isFlippedView = false;
+            let selectedFile = null;
+            let allFiles = [];
+            let currentFileId = null;
+            let isTransforming = false;
+
+            // Update date display
+            function updateDateDisplay() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                dateDisplay.textContent = now.toLocaleDateString('en-US', options);
+            }
+
+            // Login functionality
+            signinButton.addEventListener('click', function() {
+                const username = usernameInput.value;
+                const password = passwordInput.value;
+                
+                if (!username || !password) {
+                    loginError.textContent = 'Please enter both username and password';
+                    return;
+                }
+                
+                if (username === 'arun' && password === 'arun') {
+                    loadingBar.style.width = '100%';
+                    setTimeout(() => {
+                        loginBox.style.opacity = '0';
+                        setTimeout(() => {
+                            loginBox.style.display = 'none';
+                            welcomePage.style.display = 'block';
+                            body.style.backgroundColor = '#070607';
+                            updateDateDisplay();
+                        }, 500);
+                    }, 300);
+                } else {
+                    loginError.textContent = 'Invalid username or password';
+                }
+            });
+
+            // Signup functionality
+            signupSubmit.addEventListener('click', function() {
+                const username = newUsernameInput.value;
+                const email = emailInput.value;
+                const password = newPasswordInput.value;
+                const retypePassword = retypePasswordInput.value;
+                
+                if (!username || !email || !password || !retypePassword) {
+                    signupError.textContent = 'Please fill all fields';
+                    return;
+                }
+                
+                if (password !== retypePassword) {
+                    signupError.textContent = 'Passwords do not match';
+                    return;
+                }
+                
+                signupError.textContent = '';
+                showLogin();
+            });
+
+            // Forgot password functionality
+            forgotSubmit.addEventListener('click', function() {
+                const email = forgotEmailInput.value;
+                
+                if (!email) {
+                    forgotError.textContent = 'Please enter your email';
+                    return;
+                }
+                
+                forgotError.textContent = '';
+                showOtp();
+            });
+
+            // OTP functionality
+            otpSubmit.addEventListener('click', function() {
+                showLogin();
+            });
+
+            // Navigation between forms
+            forgotPassword.addEventListener('click', showForgotPassword);
+            loginLink.addEventListener('click', showSignup);
+            backToLogin.addEventListener('click', showLogin);
+            backToLoginFromForgot.addEventListener('click', showLogin);
+            backToForgot.addEventListener('click', showForgotPassword);
+            resendOtp.addEventListener('click', function() {
+                alert('OTP has been resent to your email');
+            });
+
+            // Page navigation arrows
+            prevArrow.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePage();
+                }
+            });
+
+            nextArrow.addEventListener('click', function() {
+                if (currentPage < 2) {
+                    currentPage++;
+                    updatePage();
+                }
+            });
+
+            // Form navigation functions
+            function showLogin() {
+                loginContent.style.display = 'flex';
+                signupContent.style.display = 'none';
+                forgotContent.style.display = 'none';
+                otpContent.style.display = 'none';
+            }
+
+            function showSignup() {
+                loginContent.style.display = 'none';
+                signupContent.style.display = 'flex';
+                forgotContent.style.display = 'none';
+                otpContent.style.display = 'none';
+            }
+
+            function showForgotPassword() {
+                loginContent.style.display = 'none';
+                signupContent.style.display = 'none';
+                forgotContent.style.display = 'flex';
+                otpContent.style.display = 'none';
+            }
+
+            function showOtp() {
+                loginContent.style.display = 'none';
+                signupContent.style.display = 'none';
+                forgotContent.style.display = 'none';
+                otpContent.style.display = 'flex';
+            }
+
+            // Page update function
+            function updatePage() {
+                if (currentPage === 1) {
+                    slideImage.style.opacity = '0.9';
+                    tagline.textContent = 'A simple way to sustain human life';
+                } else if (currentPage === 2) {
+                    slideImage.style.opacity = '0.7';
+                    tagline.textContent = 'Innovating for a better tomorrow';
+                }
+            }
+
+            // NEW FEATURE: Add Plan functionality with diagonal stacked cards
+            addPlanBtn.addEventListener('click', function() {
+                cardCounter++;
+                const newCard = createFileCard(cardCounter, `Plan ${cardCounter}`);
+                fileCardsContainer.appendChild(newCard);
+                allFiles.push({ element: newCard, name: `Plan ${cardCounter}`, id: cardCounter });
+            });
+
+            function createFileCard(id, name) {
+                const newCard = document.createElement('div');
+                newCard.className = 'file-card';
+                if (isFlippedView) {
+                    newCard.classList.add('flipped');
+                }
+                newCard.setAttribute('data-id', id);
+                newCard.setAttribute('data-name', name);
+                
+                newCard.innerHTML = `
+                    <div class="file-name">${name}</div>
+                    <div class="file-border-top"></div>
+                    <div class="file-border-bottom"></div>
+                    <div class="file-corner file-corner-tl"></div>
+                    <div class="file-corner file-corner-tr"></div>
+                    <div class="file-corner file-corner-bl"></div>
+                    <div class="file-corner file-corner-br"></div>
+                    <div class="file-plus"></div>
+                `;
+                
+                // Add event listener for left click (enlarge file)
+                newCard.addEventListener('click', function(e) {
+                    if (e.button === 0 && !isTransforming) { // Left click only and not during transformation
+                        enlargeFile(newCard);
+                    }
+                });
+                
+                // Add event listener for right click (context menu)
+                newCard.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    selectedFile = newCard;
+                    showContextMenu(e.clientX, e.clientY);
+                });
+
+                return newCard;
+            }
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                searchResults.innerHTML = '';
+                
+                if (searchTerm === '') {
+                    return;
+                }
+                
+                const matchingFiles = allFiles.filter(file => 
+                    file.name.toLowerCase().includes(searchTerm)
+                );
+                
+                matchingFiles.forEach(file => {
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'search-result-card';
+                    resultCard.innerHTML = `
+                        <div class="search-result-name">${file.name}</div>
+                    `;
+                    
+                    resultCard.addEventListener('click', function() {
+                        enlargeFile(file.element);
+                    });
+                    
+                    searchResults.appendChild(resultCard);
+                });
+            });
+
+            // Home icon functionality
+            homeIcon.addEventListener('click', function() {
+                if (fileEnlargedView.classList.contains('active') && !isTransforming) {
+                    closeEnlargedView();
+                }
+                
+                // Clear search
+                searchInput.value = '';
+                searchResults.innerHTML = '';
+                
+                // Reset orientation
+                isFlippedView = false;
+                const fileCards = document.querySelectorAll('.file-card');
+                fileCards.forEach(card => {
+                    card.classList.remove('flipped');
+                });
+                
+                // Update date
+                updateDateDisplay();
+                
+                // Set home as active
+                document.querySelectorAll('.nav-icon').forEach(icon => {
+                    icon.classList.remove('active');
+                });
+                homeIcon.classList.add('active');
+            });
+
+            // Orientation button functionality
+            orientationBtn.addEventListener('click', function() {
+                isFlippedView = !isFlippedView;
+                const fileCards = document.querySelectorAll('.file-card');
+                fileCards.forEach(card => {
+                    if (isFlippedView) {
+                        card.classList.add('flipped');
+                    } else {
+                        card.classList.remove('flipped');
+                    }
+                });
+            });
+
+            // Context Menu functionality
+            function showContextMenu(x, y) {
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                contextMenu.style.display = 'block';
+            }
+
+            function hideContextMenu() {
+                contextMenu.style.display = 'none';
+            }
+
+            // Hide context menu when clicking elsewhere
+            document.addEventListener('click', hideContextMenu);
+            
+            // Context menu options
+            renameOption.addEventListener('click', function() {
+                if (selectedFile) {
+                    const fileNameElement = selectedFile.querySelector('.file-name');
+                    const currentName = fileNameElement.textContent;
+                    const fileId = selectedFile.getAttribute('data-id');
+                    
+                    const renameInput = document.createElement('input');
+                    renameInput.type = 'text';
+                    renameInput.className = 'rename-input';
+                    renameInput.value = currentName;
+                    renameInput.style.color = 'white';
+                    renameInput.style.background = 'transparent';
+                    renameInput.style.border = 'none';
+                    renameInput.style.borderBottom = '1px solid rgba(255, 255, 255, 0.5)';
+                    renameInput.style.outline = 'none';
+                    
+                    fileNameElement.style.display = 'none';
+                    selectedFile.appendChild(renameInput);
+                    renameInput.focus();
+                    renameInput.select();
+                    
+                    renameInput.addEventListener('blur', function() {
+                        const newName = renameInput.value || currentName;
+                        fileNameElement.textContent = newName;
+                        fileNameElement.style.display = 'block';
+                        selectedFile.removeChild(renameInput);
+                        selectedFile.setAttribute('data-name', newName);
+                        
+                        // Update in allFiles array
+                        const fileIndex = allFiles.findIndex(f => f.id == fileId);
+                        if (fileIndex !== -1) {
+                            allFiles[fileIndex].name = newName;
+                        }
+                    });
+                    
+                    renameInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            const newName = renameInput.value || currentName;
+                            fileNameElement.textContent = newName;
+                            fileNameElement.style.display = 'block';
+                            selectedFile.removeChild(renameInput);
+                            selectedFile.setAttribute('data-name', newName);
+                            
+                            // Update in allFiles array
+                            const fileIndex = allFiles.findIndex(f => f.id == fileId);
+                            if (fileIndex !== -1) {
+                                allFiles[fileIndex].name = newName;
+                            }
+                        }
+                    });
+                }
+                hideContextMenu();
+            });
+
+            deleteOption.addEventListener('click', function() {
+                if (selectedFile) {
+                    const fileId = selectedFile.getAttribute('data-id');
+                    // Remove from allFiles array
+                    allFiles = allFiles.filter(f => f.id != fileId);
+                    selectedFile.remove();
+                }
+                hideContextMenu();
+            });
+
+            // File enlargement functionality with smooth transformation
+            function enlargeFile(file) {
+                if (isTransforming) return;
+                
+                isTransforming = true;
+                const fileName = file.getAttribute('data-name');
+                currentFileId = file.getAttribute('data-id');
+                
+                // Get file position and dimensions
+                const fileRect = file.getBoundingClientRect();
+                
+                // Set initial position and size of enlarged view to match the file card
+                fileEnlargedView.style.width = fileRect.width + 'px';
+                fileEnlargedView.style.height = fileRect.height + 'px';
+                fileEnlargedView.style.left = fileRect.left + 'px';
+                fileEnlargedView.style.top = fileRect.top + 'px';
+                fileEnlargedView.style.display = 'flex';
+                
+                // Hide the original file card during transformation
+                file.style.opacity = '0';
+                
+                // Start transformation
+                setTimeout(() => {
+                    fileEnlargedView.classList.add('transforming');
+                    
+                    // Move to center and expand
+                    fileEnlargedView.style.left = '50%';
+                    fileEnlargedView.style.top = '50%';
+                    fileEnlargedView.style.transform = 'translate(-50%, -50%) scale(1)';
+                    fileEnlargedView.style.width = '800px';
+                    fileEnlargedView.style.height = '600px';
+                    
+                    fileEnlargedTitle.textContent = fileName;
+                    filePreview.textContent = `Content of ${fileName} will be displayed here. This is where you can view and edit your plan details, calculations, and engineering specifications.`;
+                    
+                    // Clear previous chat messages and show welcome message
+                    aiChatMessages.innerHTML = `
+                        <div class="ai-chat-message bot">
+                            Hello! I'm your Solid Mechanics AI assistant. I can help you with this plan. Ask me anything about torsion, springs, pressure vessels, stress analysis, or material properties!
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        fileEnlargedView.classList.add('active');
+                        fileEnlargedView.classList.remove('transforming');
+                        isTransforming = false;
+                    }, 800);
+                }, 50);
+            }
+
+            // Close enlarged view with transparent reverse transformation
+            function closeEnlargedView() {
+                if (isTransforming) return;
+                
+                isTransforming = true;
+                const originalFile = document.querySelector(`.file-card[data-id="${currentFileId}"]`);
+                
+                // First make it transparent
+                fileEnlargedView.classList.add('reverse-transforming');
+                fileEnlargedView.classList.remove('active');
+                
+                setTimeout(() => {
+                    if (originalFile) {
+                        const fileRect = originalFile.getBoundingClientRect();
+                        
+                        // Shrink and move back to original file position
+                        fileEnlargedView.style.width = '100px';
+                        fileEnlargedView.style.height = '100px';
+                        fileEnlargedView.style.left = fileRect.left + 'px';
+                        fileEnlargedView.style.top = fileRect.top + 'px';
+                        fileEnlargedView.style.transform = 'translate(0, 0) scale(1)';
+                        
+                        setTimeout(() => {
+                            fileEnlargedView.style.display = 'none';
+                            fileEnlargedView.classList.remove('reverse-transforming');
+                            originalFile.style.opacity = '1';
+                            currentFileId = null;
+                            isTransforming = false;
+                        }, 800);
+                    } else {
+                        fileEnlargedView.style.display = 'none';
+                        fileEnlargedView.classList.remove('reverse-transforming');
+                        currentFileId = null;
+                        isTransforming = false;
+                    }
+                }, 300);
+            }
+
+            // Close enlarged view
+            fileEnlargedClose.addEventListener('click', function() {
+                closeEnlargedView();
+            });
+
+            // AI Chat functionality
+            aiChatSend.addEventListener('click', sendAIMessage);
+            aiChatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendAIMessage();
+                }
+            });
+
+            // Quick question buttons
+            quickQuestionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    aiChatInput.value = question;
+                    sendAIMessage();
+                });
+            });
+
+            function sendAIMessage() {
+                const message = aiChatInput.value.trim();
+                if (message) {
+                    // Add user message
+                    addAIMessage(message, 'user');
+                    aiChatInput.value = '';
+
+                    // Show typing indicator
+                    const typingIndicator = addAIMessage('Thinking...', 'typing');
+                    
+                    // Send to backend
+                    fetch('http://localhost:5000/api/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ question: message })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Remove typing indicator
+                        typingIndicator.remove();
+                        
+                        // Add bot response
+                        addAIMessage(data.answer || 'I apologize, but I cannot answer that right now. Please try rephrasing your question.', 'bot');
+                    })
+                    .catch(error => {
+                        // Remove typing indicator
+                        typingIndicator.remove();
+                        
+                        // Add error message
+                        addAIMessage('Sorry, the AI assistant is currently unavailable. Please make sure the backend server is running on localhost:5000.', 'bot');
+                        console.error('Error:', error);
+                    });
+                }
+            }
+
+            // Add message to AI chat
+            function addAIMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `ai-chat-message ${sender}`;
+                messageDiv.textContent = text;
+                aiChatMessages.appendChild(messageDiv);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+                return messageDiv;
+            }
+
+            // Mail icon animation
+            mailIcon.addEventListener('click', function() {
+                mailIcon.classList.toggle('active');
+            });
+
+            // Initialize
+            showLogin();
+        });
+    </script>
+</body>
+</html>
